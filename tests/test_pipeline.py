@@ -284,3 +284,49 @@ def test_workflow_gates_secrets_and_manual_inputs():
     upload = job["steps"][-1]
     assert "*.zip" not in upload["with"]["path"]
     assert "*.bin" not in upload["with"]["path"]
+
+
+def test_report_write_failure_falls_back_and_marks_error(workspace, monkeypatch):
+    add_sample(workspace)
+    writer = pipeline.write_report
+    calls = [0]
+
+    def fail_first(*args, **kwargs):
+        calls[0] += 1
+        if calls[0] == 1:
+            raise PermissionError("Cannot write requested output")
+        return writer(*args, **kwargs)
+
+    monkeypatch.setattr(pipeline, "write_report", fail_first)
+    assert pipeline.scan_pipeline(workspace) == 2
+    report, directory = get_report(workspace)
+    assert directory.is_relative_to(workspace.parent / "runner")
+    assert report["status"] == "error"
+    assert report["metrics"]["Errors"] == 1
+    assert report["exit_code"] == 2
+
+
+def test_dry_run_reports_skipped_symlinks_without_following(workspace):
+    sample = add_sample(workspace)
+    (sample.parent / "linked").symlink_to(sample)
+    assert pipeline.scan_pipeline(workspace) == 0
+    report, _ = get_report(workspace)
+    assert report["metrics"]["Skipped"] == 1
+    assert len(report["files"]) == 2
+    assert {row["status"] for row in report["files"]} == {"not scanned (dry run)", "skipped"}
+
+
+def test_ci_report_missing_junit_blocks_gate(workspace):
+    inputs = workspace / "inputs"
+    for version in ci.PYTHON_VERSIONS:
+        ci_evidence(inputs, version)
+    (inputs / "3.11/tests.xml").unlink()
+    assert ci.ci_report(inputs, workspace / "reports", "success") == 1
+    assert get_report(workspace)[0]["status"] == "failed"
+
+
+def test_inconsistent_junit_counts_are_rejected(workspace):
+    path = workspace / "bad.xml"
+    path.write_text('<testsuite tests="1" failures="2"/>')
+    with pytest.raises(ValueError):
+        ci.junit_counts(path)

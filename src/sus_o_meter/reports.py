@@ -68,7 +68,8 @@ def render_html(report: dict) -> str:
 <style>
 :root{{color-scheme:dark}}body{{margin:0;background:#101322;color:#edf0fa;
 font:16px/1.6 system-ui,sans-serif}}main{{max-width:1100px;margin:auto;padding:36px 24px}}
-header{{display:flex;align-items:center;gap:32px;border-bottom:1px solid #39405e;padding-bottom:24px}}
+header{{display:flex;align-items:center;gap:32px;
+border-bottom:1px solid #39405e;padding-bottom:24px}}
 pre{{color:#a5e6eb;font-size:14px;line-height:1.15}}h1{{font-size:36px;margin:0}}
 .eyebrow{{color:#cbb4ff;text-transform:uppercase;letter-spacing:3px}}
 .status{{display:inline-block;border:1px solid #9d8acb;border-radius:20px;padding:4px 16px}}
@@ -77,7 +78,8 @@ pre{{color:#a5e6eb;font-size:14px;line-height:1.15}}h1{{font-size:36px;margin:0}
 .card strong{{display:block;font-size:30px;color:#a5e6eb}}.card span{{color:#c2c8dd}}
 table{{width:100%;border-collapse:collapse;display:block;overflow:auto}}
 th,td{{padding:10px 14px;text-align:left;border-bottom:1px solid #39405e;word-break:break-word}}
-th{{color:#cbb4ff}}code{{font-size:12px}}dt{{color:#c2c8dd}}dd{{margin:0 0 10px;overflow-wrap:anywhere}}
+th{{color:#cbb4ff}}code{{font-size:12px}}dt{{color:#c2c8dd}}
+dd{{margin:0 0 10px;overflow-wrap:anywhere}}
 footer{{margin-top:36px;color:#c2c8dd}}.notice{{border-left:4px solid #a5e6eb;padding-left:16px}}
 </style></head><body><main>
 <header><pre aria-label="Magician">{html.escape(MAGICIAN)}</pre><div>

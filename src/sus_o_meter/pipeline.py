@@ -227,6 +227,7 @@ def scan_pipeline(
         written = write_report(report, destination or fallback_directory(), safe_name)
     except OSError:
         report.update(status="error", message="Requested report destination could not be written.")
+        report["metrics"]["Errors"] += 1
         report["exit_code"] = code = 2
         written = write_report(report, fallback_directory(), "scan-error")
     print(
