@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sus-o-meter"
+version = "0.1.0"
+description = "Hash-first malware triage with verified encrypted quarantine"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["requests>=2.32.4,<3", "rich>=13.9,<15", "pyzipper>=0.4.0,<0.5"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "ruff>=0.11,<1", "build>=1.2,<2", "pyyaml>=6,<7"]
+
+[project.scripts]
+sus-o-meter = "sus_o_meter.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
